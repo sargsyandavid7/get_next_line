@@ -6,53 +6,56 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/04 18:34:34 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/04 22:01:18 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-long long	find_indicator(long long i, char *buff)
+
+long long	index_nl(char *line)
 {
-	while (buff[i++])
+	long long	i;
+
+	i = 0;
+	while (line[i])
 	{
-		if (buff[i] == '\n')
+		if (line[i] == '\n')
 			return (i);
+		i++;
 	}
 	return (-1);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buff;
-	char		*temp;
-	long long	indicator;
-	long long	size;
+	static char		*line;
+	char			*temp;
+	long long		size;
+	long long		index;
 
-	if (!buff)
-		buff = (char *)malloc(BUFFER_SIZE + 1);
-	if (!buff || fd < 0)
-		return (NULL);
-	size = read(fd, buff, BUFFER_SIZE);
-	buff[size] = '\0';
-	indicator = 0;
-	if (size < 0 || !buff)
+	if (!line)
+		line = (char *)malloc(BUFFER_SIZE + 1);
+	size = read(fd, line + ft_strlen(line), BUFFER_SIZE - ft_strlen(line));
+	if (size < 0 || !line)
 	{
-		free(buff);
+		free(line);
 		return (NULL);
 	}
-	indicator = find_indicator(0, buff);
-	if (size < BUFFER_SIZE && indicator == -1)
-		return (buff);
-	while (indicator == -1)
+	index = index_nl(line);
+	while (index == -1)
 	{
 		temp = (char *)malloc(BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		temp[size] = '\0';
-		buff = ft_strjoin(buff, temp);
-		indicator = find_indicator(0, buff);
+		if (size == 0)
+			return (line);
+		line = ft_strjoin(line, temp);
+		index = index_nl(line);
 		free(temp);
 	}
-	printf("%s",buff);
+	temp = ft_substr(line, 0, index + 1);
+	line = ft_substr(line, index + 1, ft_strlen(line) - index);
+	printf("%s",temp);
 	return (temp);
 }
