@@ -5,31 +5,54 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/27 11:18:51 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/02/27 11:26:06 by dasargsy         ###   ########.fr       */
+/*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
+/*   Updated: 2024/03/04 18:34:34 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+long long	find_indicator(long long i, char *buff)
+{
+	while (buff[i++])
+	{
+		if (buff[i] == '\n')
+			return (i);
+	}
+	return (-1);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*buff;
-	static char	mini_buff[1];
+	char		*temp;
+	long long	indicator;
+	long long	size;
 
-	buff = ft_strdup("");
-	if (fd == -1)
+	if (!buff)
+		buff = (char *)malloc(BUFFER_SIZE + 1);
+	if (!buff || fd < 0)
 		return (NULL);
-	while (read(fd, mini_buff, 1))
+	size = read(fd, buff, BUFFER_SIZE);
+	buff[size] = '\0';
+	indicator = 0;
+	if (size < 0 || !buff)
 	{
-		buff = ft_strjoin(buff, mini_buff);
-		if (buff == NULL)
-			return (NULL);
-		if (mini_buff[0] == '\n')
-		{
-			write(1, buff, ft_strlen(buff));
-			return (buff);
-		}
+		free(buff);
+		return (NULL);
 	}
-	return (buff);
+	indicator = find_indicator(0, buff);
+	if (size < BUFFER_SIZE && indicator == -1)
+		return (buff);
+	while (indicator == -1)
+	{
+		temp = (char *)malloc(BUFFER_SIZE + 1);
+		size = read(fd, temp, BUFFER_SIZE);
+		temp[size] = '\0';
+		buff = ft_strjoin(buff, temp);
+		indicator = find_indicator(0, buff);
+		free(temp);
+	}
+	printf("%s",buff);
+	return (temp);
 }
