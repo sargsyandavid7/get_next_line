@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:58:35 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/04 15:22:33 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/05 17:04:48 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_strlen(char *s)
 {
 	size_t	i;
 
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 		i++;
@@ -23,7 +25,7 @@ size_t	ft_strlen(char *s)
 }
 
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 {
 	char	*a;
 	size_t	i;
@@ -49,6 +51,8 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 		i++;
 	}
 	a[i] = '\0';
+	if (f)
+		free(s);
 	return (a);
 }
 

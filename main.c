@@ -1,16 +1,16 @@
 #include "get_next_line.h"
+#include <stdio.h>
 
 int main()
 {
 	int fd = open("x",O_RDONLY);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-//	get_next_line(fd);
+	//system("leaks a.out");
+	printf("%s\n",get_next_line(fd));
+	printf("%s",get_next_line(fd));
+	printf("%s",get_next_line(fd));
+	printf("%s",get_next_line(fd));
+	printf("%s",get_next_line(fd));
+	printf("%s",get_next_line(fd));
+	printf("%s",get_next_line(fd));
 
 }

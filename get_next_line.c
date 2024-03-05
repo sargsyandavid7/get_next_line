@@ -6,21 +6,21 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/04 22:01:18 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/05 17:09:04 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdlib.h>
 
-
-long long	index_nl(char *line)
+static long long	find_index(char *buffer)
 {
 	long long	i;
 
 	i = 0;
-	while (line[i])
+	while (buffer[i])
 	{
-		if (line[i] == '\n')
+		if (buffer[i] == '\n')
 			return (i);
 		i++;
 	}
@@ -29,33 +29,36 @@ long long	index_nl(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char		*line;
-	char			*temp;
-	long long		size;
-	long long		index;
+	static char	*buff;
+	char		*temp;
+	long long	size;
+	long long	index;
 
-	if (!line)
-		line = (char *)malloc(BUFFER_SIZE + 1);
-	size = read(fd, line + ft_strlen(line), BUFFER_SIZE - ft_strlen(line));
-	if (size < 0 || !line)
-	{
-		free(line);
+	size = 0;
+	if (fd < 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	}
-	index = index_nl(line);
+	if (!buff)
+		buff = (char *)malloc(BUFFER_SIZE + 1);
+	size = read(fd, buff, BUFFER_SIZE);
+	if (size == 0)
+		return (NULL);
+	buff[size] = '\0';
+	index = find_index(buff);
 	while (index == -1)
 	{
 		temp = (char *)malloc(BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		temp[size] = '\0';
 		if (size == 0)
-			return (line);
-		line = ft_strjoin(line, temp);
-		index = index_nl(line);
+		{
+			free(temp);
+			return (buff);
+		}
+		buff = ft_strjoin(buff, temp);
+		index = find_index(buff);
 		free(temp);
 	}
-	temp = ft_substr(line, 0, index + 1);
-	line = ft_substr(line, index + 1, ft_strlen(line) - index);
-	printf("%s",temp);
+	temp = ft_substr(buff, 0, index + 1, 0);
+	buff = ft_substr(buff, index + 1, ft_strlen(buff) - index, 1);
 	return (temp);
 }
