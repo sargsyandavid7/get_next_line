@@ -6,59 +6,85 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/05 17:09:04 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/06 18:37:57 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdlib.h>
 
-static long long	find_index(char *buffer)
+long long	find_line(char *return_char)
 {
 	long long	i;
 
-	i = 0;
-	while (buffer[i])
+	while (return_char[i])
 	{
-		if (buffer[i] == '\n')
+		if (return_char[i] == '\n')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-char	*get_next_line(int fd)
+char	*get_stay_char(int fd)
 {
-	static char	*buff;
-	char		*temp;
-	long long	size;
-	long long	index;
+	
+}
 
-	size = 0;
-	if (fd < 0 || read(fd, 0, 0) < 0)
-		return (NULL);
-	if (!buff)
-		buff = (char *)malloc(BUFFER_SIZE + 1);
-	size = read(fd, buff, BUFFER_SIZE);
+char	*get_return_char(int fd, char *stay_char)
+{
+	long long	size;
+	char		*return_char;
+	char		*temp;
+	long long	line;
+
+	return_char = malloc(BUFFER_SIZE + 1);
+	
+	size = read(fd, return_char, BUFFER_SIZE);
 	if (size == 0)
-		return (NULL);
-	buff[size] = '\0';
-	index = find_index(buff);
-	while (index == -1)
 	{
-		temp = (char *)malloc(BUFFER_SIZE + 1);
+		free(return_char);
+		line = find_line(stay_char);
+		if (line == -1)
+			return (stay_char);
+		stay_char = ft_substr(stay_char, line, ft_strlen(stay_char) - line,1);
+		return (stay_char);
+	}
+	return_char[size] = '\0';
+	if (ft_strlen(return_char) < BUFFER_SIZE)
+		return_char = ft_substr(return_char, 0, size, 1);
+	line = find_line(return_char);
+	while (line == -1)
+	{
+		temp = malloc(BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		temp[size] = '\0';
 		if (size == 0)
 		{
 			free(temp);
-			return (buff);
+			if (ft_strlen(stay_char) != 0)
+				return (ft_strjoin(stay_char, return_char));
+			else 
+				return (return_char);
 		}
-		buff = ft_strjoin(buff, temp);
-		index = find_index(buff);
+		return_char = ft_strjoin(return_char, temp);
+		line = find_line(return_char);
 		free(temp);
 	}
-	temp = ft_substr(buff, 0, index + 1, 0);
-	buff = ft_substr(buff, index + 1, ft_strlen(buff) - index, 1);
-	return (temp);
+	temp = ft_substr(return_char, 0, line + 1, 1);
+	stay_char = ft_substr(return_char, line + 1, ft_strlen(return_char) - line, 0);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*stay_char;
+	char		*return_char;
+
+	if (fd < 0 || read(fd, 0, 0) < 0)
+	{
+		if (stay_char)
+			free(stay_char);
+		stay_char = NULL;
+		return (NULL);
+	}
+	
 }
