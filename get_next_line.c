@@ -6,85 +6,124 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/06 18:37:57 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/07 22:50:35 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-long long	find_line(char *return_char)
+long long	find_newline(char *readed)
 {
 	long long	i;
 
-	while (return_char[i])
+	i = 0;
+	while (readed[i])
 	{
-		if (return_char[i] == '\n')
+		if (readed[i] == '\n')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-char	*get_stay_char(int fd)
+char	*get_st_char(char *readed, char *s)
 {
-	
+	char		*st_char;
+	long long	index;
+
+	if (readed == NULL)
+	{
+		if (s == NULL)
+			return (NULL);
+		index = find_newline(s);
+		if (index == -1)
+		{
+			free(s);
+			return (NULL);
+		}
+		st_char = ft_substr(s, index + 1, ft_strlen(s) - index, 1);
+		return (st_char);
+	}
+	index = find_newline(readed);
+	if (index == -1)
+	{
+		free(s);
+		free(readed);
+		return (NULL);
+	}
+	st_char = ft_substr(readed, index + 1, ft_strlen(readed) - index, 1);
+	free(s);
+	return (st_char);
 }
 
-char	*get_return_char(int fd, char *stay_char)
+char	*get_return_line(char *st_char, char *readed)
 {
-	long long	size;
-	char		*return_char;
-	char		*temp;
-	long long	line;
+	char		*line;
+	long long	index;
 
-	return_char = malloc(BUFFER_SIZE + 1);
-	
-	size = read(fd, return_char, BUFFER_SIZE);
-	if (size == 0)
+	if (readed == NULL && st_char == NULL)
+		return (NULL);
+	else if (readed == NULL && st_char != NULL)
 	{
-		free(return_char);
-		line = find_line(stay_char);
-		if (line == -1)
-			return (stay_char);
-		stay_char = ft_substr(stay_char, line, ft_strlen(stay_char) - line,1);
-		return (stay_char);
+		index = find_newline(st_char);
+		if (index == -1)
+			line = ft_substr(st_char, 0, ft_strlen(st_char), 0);
+		else
+			line = ft_substr(st_char, 0, index + 1, 0);
+		return (line);
 	}
-	return_char[size] = '\0';
-	if (ft_strlen(return_char) < BUFFER_SIZE)
-		return_char = ft_substr(return_char, 0, size, 1);
-	line = find_line(return_char);
-	while (line == -1)
+	if (st_char != NULL)
+		readed = ft_strjoin(st_char, readed, 0, 1);
+	index = find_newline(readed);
+	if (index == -1)
+		index = ft_strlen(readed);
+	line = ft_substr(readed, 0, index + 1, 0);
+	return (line);
+}
+
+char	*get_readed(int fd)
+{
+	char		*readed;
+	char		*temp;
+	long long	nl;
+	long long	size;
+
+	readed = (char *)calloc(1, BUFFER_SIZE + 1);
+	size = read(fd, readed, BUFFER_SIZE);
+	if (size <= 0 || !readed)
 	{
-		temp = malloc(BUFFER_SIZE + 1);
+		free(readed);
+		return (NULL);
+	}
+	if (size < BUFFER_SIZE)
+		readed = ft_substr(readed, 0, size, 1);
+	nl = find_newline(readed);
+	while (nl == -1 && size != 0)
+	{
+		temp = (char *)calloc(1, BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
-		temp[size] = '\0';
-		if (size == 0)
-		{
-			free(temp);
-			if (ft_strlen(stay_char) != 0)
-				return (ft_strjoin(stay_char, return_char));
-			else 
-				return (return_char);
-		}
-		return_char = ft_strjoin(return_char, temp);
-		line = find_line(return_char);
-		free(temp);
+		readed = ft_strjoin(readed, temp, 1, 1);
+		nl = find_newline(readed);
 	}
-	temp = ft_substr(return_char, 0, line + 1, 1);
-	stay_char = ft_substr(return_char, line + 1, ft_strlen(return_char) - line, 0);
+	return (readed);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*stay_char;
-	char		*return_char;
+	static char	*st_char;
+	char		*line;
+	char		*readed;
 
 	if (fd < 0 || read(fd, 0, 0) < 0)
 	{
-		if (stay_char)
-			free(stay_char);
-		stay_char = NULL;
+		st_char = NULL;
 		return (NULL);
 	}
-	
+	readed = get_readed(fd);
+	//printf("---------------------------readed is %s|",readed);
+	line = get_return_line(st_char, readed);
+	//printf("----------------------------line is %s|",line);
+	st_char = get_st_char(readed, st_char);
+	//printf("----------------------------st_char is %s|",st_char);
+	return (line);
 }

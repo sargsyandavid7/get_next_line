@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:58:35 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/06 17:14:24 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/07 20:13:38 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 	size_t	i;
 
 	i = 0;
-	if (!s)
+	if (!s || len == 0)
 		return (NULL);
 	if (start > ft_strlen(s))
 	{
@@ -56,7 +56,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 	return (a);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char *s1, char *s2, int f, int f2)
 {
 	char	*joined;
 	size_t	i;
@@ -77,7 +77,10 @@ char	*ft_strjoin(char *s1, char *s2)
 		joined[i + j] = s2[j];
 		j++;
 	}
-	free(s1);
+	if (f)
+		free(s1);
+	if (f2)
+		free(s2);
 	joined[i + j] = '\0';
 	return (joined);
 }
