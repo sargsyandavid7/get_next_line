@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/07 22:50:35 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/08 17:19:44 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,17 @@ char	*get_st_char(char *readed, char *s)
 		st_char = ft_substr(s, index + 1, ft_strlen(s) - index, 1);
 		return (st_char);
 	}
-	index = find_newline(readed);
+	if (s != NULL)
+		st_char = ft_strjoin(s, readed, 1, 1);
+	else
+		st_char = ft_substr(readed, 0, ft_strlen(readed), 1);
+	index = find_newline(st_char);
 	if (index == -1)
 	{
-		free(s);
-		free(readed);
+		free(st_char);
 		return (NULL);
 	}
-	st_char = ft_substr(readed, index + 1, ft_strlen(readed) - index, 1);
-	free(s);
+	st_char = ft_substr(st_char, index + 1, ft_strlen(st_char) - index, 1);
 	return (st_char);
 }
 
@@ -73,11 +75,13 @@ char	*get_return_line(char *st_char, char *readed)
 		return (line);
 	}
 	if (st_char != NULL)
-		readed = ft_strjoin(st_char, readed, 0, 1);
-	index = find_newline(readed);
+		line = ft_strjoin(st_char, readed, 0, 0);
+	else
+		line = ft_substr(readed, 0, ft_strlen(readed), 0);
+	index = find_newline(line);
 	if (index == -1)
-		index = ft_strlen(readed);
-	line = ft_substr(readed, 0, index + 1, 0);
+		index = ft_strlen(line) - 1;
+	line = ft_substr(line, 0, index + 1, 1);
 	return (line);
 }
 
@@ -116,14 +120,18 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || read(fd, 0, 0) < 0)
 	{
+		free(st_char);
 		st_char = NULL;
 		return (NULL);
 	}
 	readed = get_readed(fd);
 	//printf("---------------------------readed is %s|",readed);
+	//printf("%s is readed line \n",readed);
 	line = get_return_line(st_char, readed);
 	//printf("----------------------------line is %s|",line);
 	st_char = get_st_char(readed, st_char);
+	//printf("%s is static string\n",st_char);
+	//printf("%s is line to return\n\n\n\n", line);
 	//printf("----------------------------st_char is %s|",st_char);
 	return (line);
 }

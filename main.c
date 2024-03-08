@@ -4,9 +4,44 @@
 int main()
 {
 	int fd = open("x",O_RDONLY);
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-	printf("%s",get_next_line(fd));
-
+	char *a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	a = get_next_line(fd);
+	printf("%s",a);
+	free(a);
+	
 }
