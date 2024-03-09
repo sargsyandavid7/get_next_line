@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/09 16:07:24 by dasargsy         ###   ########.fr       */
+/*   Created: 2024/03/09 16:24:29 by dasargsy          #+#    #+#             */
+/*   Updated: 2024/03/09 16:27:17 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 long long	find_newline(char *readed)
 {
@@ -113,18 +113,18 @@ char	*get_readed(int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	*st_char;
+	static char	*st_char[OPEN_MAX];
 	char		*line;
 	char		*readed;
 
 	if (fd < 0 || read(fd, 0, 0) < 0)
 	{
-		free(st_char);
-		st_char = NULL;
+		free(st_char[fd]);
+		st_char[fd] = NULL;
 		return (NULL);
 	}
 	readed = get_readed(fd);
-	line = get_return_line(st_char, readed);
-	st_char = get_st_char(readed, st_char);
+	line = get_return_line(st_char[fd], readed);
+	st_char[fd] = get_st_char(readed, st_char[fd]);
 	return (line);
 }
