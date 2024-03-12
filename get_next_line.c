@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/09 16:07:24 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/12 17:15:51 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	*get_readed(int fd)
 	nl = find_newline(readed);
 	while (nl == -1 && size != 0)
 	{
-		temp = (char *)calloc(1, BUFFER_SIZE + 1);
+		temp = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		readed = ft_strjoin(readed, temp, 1, 1);
 		nl = find_newline(readed);
