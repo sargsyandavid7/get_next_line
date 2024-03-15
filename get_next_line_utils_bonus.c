@@ -6,29 +6,29 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:25:46 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/09 16:26:25 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/15 13:39:52 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-void	*ft_calloc(size_t num, size_t size)
+static void	s_zero(void *s, size_t n)
 {
-	void			*a;
-	unsigned char	*b;
-	size_t			i;
+	while (n--)
+		*(unsigned char *)s++ = 0;
+}
 
-	i = 0;
-	a = malloc(num * size);
-	if (!a)
+void	*ft_calloc(size_t count, size_t n)
+{
+	void	*memory;
+
+	if (count && n && count > (UINT_MAX / n))
 		return (NULL);
-	b = (unsigned char *)(a);
-	while (i < num * size)
-	{
-		b[i] = 0;
-		i++;
-	}
-	return (a);
+	memory = malloc(count * n);
+	if (!memory)
+		return (NULL);
+	s_zero(memory, count * n);
+	return (memory);
 }
 
 size_t	ft_strlen(char *s)
