@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:24:29 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/09 17:59:59 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:04:12 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*get_return_line(char *st_char, char *readed)
 	return (line);
 }
 
-char	*get_readed(int fd)
+char	*get_readed(int fd, char *st_char)
 {
 	char		*readed;
 	char		*temp;
@@ -93,6 +93,12 @@ char	*get_readed(int fd)
 
 	readed = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 	size = read(fd, readed, BUFFER_SIZE);
+	if (size < 0)
+	{
+		free(readed);
+		free(st_char);
+		return (NULL);
+	}
 	if (size <= 0 || !readed)
 	{
 		free(readed);
@@ -117,14 +123,33 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*readed;
 
-	if (fd < 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
 		free(st_char[fd]);
 		st_char[fd] = NULL;
 		return (NULL);
 	}
-	readed = get_readed(fd);
+	readed = get_readed(fd, st_char[fd]);
 	line = get_return_line(st_char[fd], readed);
 	st_char[fd] = get_st_char(readed, st_char[fd]);
 	return (line);
 }
+/*#include <stdio.h>
+int main()
+{
+	int fd1 = 8989;
+	int fd2 = 5555;
+	int fd3 = 4277;
+	printf("%s",get_next_line(fd1));
+	printf("%s",get_next_line(fd2));
+	printf("%s",get_next_line(fd1));
+	//system("leaks a.out");
+	printf("%s",get_next_line(fd3));
+	printf("%s",get_next_line(fd2));
+	//system("leaks a.out");
+	printf("%s",get_next_line(fd1));
+	printf("%s",get_next_line(fd3));
+	//system("leaks a.out");
+	printf("%s",get_next_line(fd1));
+	//system("leaks a.out");
+}*/

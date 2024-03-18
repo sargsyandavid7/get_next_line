@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:51 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/18 19:57:55 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*get_return_line(char *st_char, char *readed)
 	return (line);
 }
 
-char	*get_readed(int fd)
+char	*get_readed(int fd, char **st_char)
 {
 	char		*readed;
 	char		*temp;
@@ -93,6 +93,13 @@ char	*get_readed(int fd)
 
 	readed = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 	size = read(fd, readed, BUFFER_SIZE);
+	if (size < 0)
+	{
+		free(*st_char);
+		*st_char = NULL;
+		free(readed);
+		return (NULL);
+	}
 	if (size <= 0 || !readed)
 	{
 		free(readed);
@@ -116,15 +123,27 @@ char	*get_next_line(int fd)
 	static char	*st_char;
 	char		*line;
 	char		*readed;
-
-	if (fd < 0 || read(fd, 0, 0) < 0)
+	
+	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
 		free(st_char);
 		st_char = NULL;
 		return (NULL);
 	}
-	readed = get_readed(fd);
+	readed = get_readed(fd, &st_char);
 	line = get_return_line(st_char, readed);
 	st_char = get_st_char(readed, st_char);
 	return (line);
 }
+
+//#include <stdio.h>
+//int main(){
+//    char *str;
+//    int fd = open("text.txt",O_RDONLY);
+//    str = get_next_line(fd);
+//    while (str)
+//    {
+//		printf("%s", str);
+//        str = get_next_line(fd);
+//	}
+//}

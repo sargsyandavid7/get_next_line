@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:25:46 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/15 13:39:52 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/16 15:12:49 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 		return (NULL);
 	if (start > ft_strlen(s))
 	{
-		a = (char *)ft_calloc(1, 1);
+		a = (char *)calloc(1, 1);
 		return (a);
 	}
 	if (len > ft_strlen(s) - start)
