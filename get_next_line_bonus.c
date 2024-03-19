@@ -6,11 +6,12 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:24:29 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/18 20:04:12 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:03:24 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
+#include <stdio.h>
 
 long long	find_newline(char *readed)
 {
@@ -84,35 +85,29 @@ char	*get_return_line(char *st_char, char *readed)
 	return (line);
 }
 
-char	*get_readed(int fd, char *st_char)
+char	*get_readed(int fd, char **st_char)
 {
 	char		*readed;
 	char		*temp;
-	long long	nl;
 	long long	size;
 
 	readed = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 	size = read(fd, readed, BUFFER_SIZE);
 	if (size < 0)
 	{
-		free(readed);
-		free(st_char);
-		return (NULL);
+		free(st_char[fd]);
+		st_char[fd] = NULL;
 	}
 	if (size <= 0 || !readed)
 	{
 		free(readed);
 		return (NULL);
 	}
-	if (size < BUFFER_SIZE)
-		readed = ft_substr(readed, 0, size, 1);
-	nl = find_newline(readed);
-	while (nl == -1 && size != 0)
+	while (find_newline(readed) == -1 && size != 0)
 	{
 		temp = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		readed = ft_strjoin(readed, temp, 1, 1);
-		nl = find_newline(readed);
 	}
 	return (readed);
 }
@@ -123,33 +118,62 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*readed;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		free(st_char[fd]);
-		st_char[fd] = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
 		return (NULL);
-	}
-	readed = get_readed(fd, st_char[fd]);
+	readed = get_readed(fd, st_char);
 	line = get_return_line(st_char[fd], readed);
 	st_char[fd] = get_st_char(readed, st_char[fd]);
 	return (line);
 }
-/*#include <stdio.h>
-int main()
+
+/*int main()
+ {
+ 	//int fd4 = open("a.txt",O_RDONLY);
+ 	//printf("%s\n",get_next_line(1040));
+ 	printf("%s\n",get_next_line(10367));
+ 	printf("%s\n",get_next_line(10));
+ 	printf("%s\n",get_next_line(10));
+	printf("%s\n", get_next_line(2));
+ 	//printf("%s\n",get_next_line(10241));
+ 	//printf("%s\n",get_next_line(10242));
+ 	//printf("%s\n",get_next_line(10243));
+ 	////system("leaks a.out");
+ 	//printf("%s",get_next_line(fd2));
+ 	//printf("%s",get_next_line(fd1));
+ 	////system("leaks a.out");
+ 	//printf("%s",get_next_line(fd4));
+ 	// get_next_line(fd1);
+ 	// get_next_line(11);
+ 	// get_next_line(33);
+ 	// get_next_line(-2);
+ 	//system("leaks a.out");
+ 	//get_next_line(fd4);
+ 	//system("leaks a.out");
+ }
+*/
+/*
+int	main(void)
 {
-	int fd1 = 8989;
-	int fd2 = 5555;
-	int fd3 = 4277;
-	printf("%s",get_next_line(fd1));
-	printf("%s",get_next_line(fd2));
-	printf("%s",get_next_line(fd1));
-	//system("leaks a.out");
-	printf("%s",get_next_line(fd3));
-	printf("%s",get_next_line(fd2));
-	//system("leaks a.out");
-	printf("%s",get_next_line(fd1));
-	printf("%s",get_next_line(fd3));
-	//system("leaks a.out");
-	printf("%s",get_next_line(fd1));
-	//system("leaks a.out");
+	int	i;
+	int	fd;
+	int 	fd2 = 2;
+	char	*ch1;
+	char	*ch2;
+
+	i = 10;
+	fd = open("a.txt", O_RDONLY);
+	// fd2 = open("gnl2.txt", O_RDONLY);
+//printf("%s\n", get_next_line(fd));	
+//printf("%s\n", get_next_line(fd2));
+//printf("%s\n", get_next_line(fd));
+//printf("%s\n", get_next_line(fd2));
+	 while (i--)
+	 {
+		 ch1 = get_next_line(fd);
+		 ch2 = get_next_line(fd2);
+		 printf("[%s]\n", ch1);
+		 printf("❌ [%s]\n", ch2);
+		 free(ch1);
+	 }
+	close(fd);
 }*/

@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:24:57 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/18 19:52:11 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/18 22:08:01 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <limits.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10000000000
+#  define BUFFER_SIZE 1
 # endif
 
 char	*get_next_line(int fd);

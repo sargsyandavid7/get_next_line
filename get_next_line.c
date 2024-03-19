@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 16:42:14 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/18 19:57:55 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/19 13:01:52 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ char	*get_readed(int fd, char **st_char)
 {
 	char		*readed;
 	char		*temp;
-	long long	nl;
 	long long	size;
 
 	readed = (char *)ft_calloc(1, BUFFER_SIZE + 1);
@@ -97,23 +96,17 @@ char	*get_readed(int fd, char **st_char)
 	{
 		free(*st_char);
 		*st_char = NULL;
-		free(readed);
-		return (NULL);
 	}
 	if (size <= 0 || !readed)
 	{
 		free(readed);
 		return (NULL);
 	}
-	if (size < BUFFER_SIZE)
-		readed = ft_substr(readed, 0, size, 1);
-	nl = find_newline(readed);
-	while (nl == -1 && size != 0)
+	while (find_newline(readed) == -1 && size != 0)
 	{
 		temp = (char *)ft_calloc(1, BUFFER_SIZE + 1);
 		size = read(fd, temp, BUFFER_SIZE);
 		readed = ft_strjoin(readed, temp, 1, 1);
-		nl = find_newline(readed);
 	}
 	return (readed);
 }
@@ -123,8 +116,8 @@ char	*get_next_line(int fd)
 	static char	*st_char;
 	char		*line;
 	char		*readed;
-	
-	if (fd < 0 || BUFFER_SIZE <= 0)
+
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 	{
 		free(st_char);
 		st_char = NULL;
@@ -136,14 +129,14 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-//#include <stdio.h>
-//int main(){
+// #include <stdio.h>
+// int main(){
 //    char *str;
 //    int fd = open("text.txt",O_RDONLY);
 //    str = get_next_line(fd);
 //    while (str)
 //    {
-//		printf("%s", str);
-//        str = get_next_line(fd);
-//	}
-//}
+// 		printf("%s", str);
+//        str = get_next_line(5);
+// 	}
+// }
