@@ -6,7 +6,7 @@
 /*   By: dasargsy <dasargsy@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 16:24:29 by dasargsy          #+#    #+#             */
-/*   Updated: 2024/03/19 13:03:24 by dasargsy         ###   ########.fr       */
+/*   Updated: 2024/03/19 14:03:30 by dasargsy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ char	*get_readed(int fd, char **st_char)
 
 char	*get_next_line(int fd)
 {
-	static char	*st_char[OPEN_MAX];
+	static char	*st_char[4096];
 	char		*line;
 	char		*readed;
 
@@ -127,14 +127,25 @@ char	*get_next_line(int fd)
 }
 
 /*int main()
- {
- 	//int fd4 = open("a.txt",O_RDONLY);
- 	//printf("%s\n",get_next_line(1040));
- 	printf("%s\n",get_next_line(10367));
- 	printf("%s\n",get_next_line(10));
- 	printf("%s\n",get_next_line(10));
-	printf("%s\n", get_next_line(2));
- 	//printf("%s\n",get_next_line(10241));
+{
+	int fd1 = open("gg.txt", O_RDONLY);
+	int fd3 = open("giant_line.txt", O_RDONLY);
+	int fd4 = open("multiple_nl.txt", O_RDONLY);
+	int fd5 = open("one_line_no_nl.txt", O_RDONLY);
+	int fd6 = open("lines_around_10.txt", O_RDONLY);
+	int fd7 = open("giant_line_nl.txt", O_RDONLY);
+
+	int a = 50;
+	while (a--)
+	{
+		printf("%s\n",get_next_line(fd1));
+		printf("%s\n",get_next_line(fd3));
+		printf("%s\n",get_next_line(fd4));
+		printf("%s\n",get_next_line(fd5));
+		printf("%s\n",get_next_line(fd6));
+		printf("%s\n",get_next_line(fd7));
+	}
+	
  	//printf("%s\n",get_next_line(10242));
  	//printf("%s\n",get_next_line(10243));
  	////system("leaks a.out");
